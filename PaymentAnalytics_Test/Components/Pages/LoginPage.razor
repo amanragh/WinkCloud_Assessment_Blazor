@@ -1,0 +1,50 @@
+﻿@rendermode InteractiveServer
+@page "/login"
+@using PaymentAnalytics_Test.Service
+@inject TokenProvider tokenProvider
+@inject HttpClient httpClient
+@inject NavigationManager navigation
+@using System.Net.Http.Headers;
+
+<h3>LoginPage</h3>
+<div class="container mt-5" style="max-width: 400px;">
+    <h3 class="mb-4 text-center">Login</h3>
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input id="username" class="form-control" @bind="username" placeholder="Enter username" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input id="password" type="password" class="form-control" @bind="password" placeholder="Enter password" />
+    </div>
+
+    <button class="btn btn-primary w-100" @onclick="@Login">Login User</button>
+</div>
+
+@code {
+    public string username = "";
+    public string password = "";
+    public string? requestUri { get; set; }
+
+    private async Task Login()
+    {
+        requestUri = $"https://demo.payment-gate.net/api/Authenticate?UserName={Uri.EscapeDataString(username)}&Password={Uri.EscapeDataString(password)}";
+        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        var response = await httpClient.GetFromJsonAsync<TokenObject>(requestUri);
+        tokenProvider.Token = response.BearerToken;
+        navigation.NavigateTo("/keyCustomer");
+        return;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // tokenProvider.Token = "testing";
+    }
+
+    public class TokenObject
+    {
+        public string? BearerToken { get; set; }
+    }
+}

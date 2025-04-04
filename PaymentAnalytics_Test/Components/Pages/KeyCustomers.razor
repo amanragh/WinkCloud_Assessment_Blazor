@@ -1,0 +1,37 @@
+﻿@page "/keyCustomer"
+@using PaymentAnalytics_Test.Service
+@using PaymentAnalytics_Test.Model
+@inject TransactionService transactionService
+@inject TokenProvider tokenProvider
+
+<PageTitle>Payments Dashboard</PageTitle>
+
+<MudTable Items="@AllKeyCustomers" Hover="true">
+    <HeaderContent>
+        <MudTh>CustomerKey</MudTh>
+        <MudTh>CustomerName</MudTh>
+        <MudTh>TransactionCount</MudTh>
+        <MudTh>TransactionAmount</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="CustomerKey">@context.CustomerKey</MudTd>
+        <MudTd DataLabel="CustomerName">@context.CustomerName</MudTd>
+        <MudTd DataLabel="TransactionCount">@context.TransactionCount</MudTd>
+        <MudTd DataLabel="TransactionAmount">@context.TransactionAmount</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private bool _hidePosition;
+    private bool _loading;
+    private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InMwZyJ9.eyJpYXQiOjE3NDM2NTg0OTQsImV4cCI6MTc0NDg2ODA5NCwicHJlZmVycmVkX3VzZXJuYW1lIjoia2F1c2hpa2NhcGkiLCJyb2xlcyI6WyJVc2VyIiwiQVBJIiwiUmVzZWxsZXIiXSwidmsiOjEyNDgsInVrIjo5OTIsIml0IjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklqYzJNMkkzTVRFNE5HRmhNMk5qWkdZMFlXWTFOMlEwWVdKaE9HVTFORGsySWl3aWRIbHdJam9pU2xkVUluMC5leUp1WW1ZaU9qRTNORE0yTlRnME9UUXNJbVY0Y0NJNk1UYzBNelkyTWpBNU5Dd2lhWE56SWpvaWFIUjBjRG92TDJ4dlkyRnNhRzl6ZERvMU1EQXdJaXdpWVhWa0lqcGJJbWgwZEhBNkx5OXNiMk5oYkdodmMzUTZOVEF3TUM5eVpYTnZkWEpqWlhNaUxDSnNaV2RoWTNsMWFTSmRMQ0pqYkdsbGJuUmZhV1FpT2lKd2FIaG5ZWFJsTG5KbGMzUmhjR2tpTENKemRXSWlPaUk1T1RJaUxDSmhkWFJvWDNScGJXVWlPakUzTkRNMk5UZzBPVFFzSW1sa2NDSTZJbXh2WTJGc0lpd2lVM1JoZEhWeklqb2lRVU5VU1ZaRklpd2lTWE5CVUVsVmMyVnlJam9pVkhKMVpTSXNJa3RsZVNJNklqazVNaUlzSWxWelpYSnVZVzFsSWpvaWEyRjFjMmhwYTJOaGNHa2lMQ0pWYzJWeVJtbHljM1JPWVcxbElqb2lTMkYxYzJocGF5SXNJbFZ6WlhKTVlYTjBUbUZ0WlNJNklrTm9ZV3R5WVdKdmNuUjVJaXdpVkdWdVlXNTBTV1FpT2lJeElpd2ljbTlzWlNJNklsSmxjMlZzYkdWeUlpd2lVbVZ6Wld4c1pYSkxaWGtpT2lJeE1qUTRJaXdpVW1WelpXeHNaWEpPWVcxbElqb2lVbE1nVTI5bWRIZGhjbVVnVW1WelpXeHNaWElpTENKelkyOXdaU0k2V3lKc1pXZGhZM2wxYVNKZExDSmhiWElpT2xzaWNIZGtJbDE5LmNaSVFiTnVtODBWZGNmdDFyVHc0elFRaVB0WUVDNmNJaHlHdjd2a3l6QV8yVDMyLXduV1c1UTNFUmMydlVEOWhSVmpXQndTYktWQ2FBMFJWdGYtU2hOTHBQTDhQZHZQOEtHX1ZmSm1HZVVPc2VDMHNVLXJub1F5dVp6VHFES1A1UmN6M09SV2JUWGlpbzZiUElVRGx6RGtfbGxGZ3EtT3N2dm03Q0VZWTVwcjZvalFmb043MXg1b280MzZEOUZaWWozN2RJNG03UmpWdHBlOVRhNVNuU0FFQnkwWjNGMF9oSkxsemI1d2RtMVB0aUhibFBSZEtBSFNSaFJORnN4OU1XTGdxeng0alRIVnBLWHpRSVZ3Q09LdERuOVhWdUVxOGdRU2lRM0xvMUtxTmU2MWlRVGE0bDJaQ05ZcmpIY251NXFILVdDQ1JOenE2T2duclpwSlJpZyIsInRpZCI6MX0.mZAVzpRVmOKMlP_RmdpAM0AMFFffJEiRTlq0uJxEqiFEGs-pfN_iRRn9v0DQjoou0utKBgNeEibVZ2FyJ4Hw2Y4GMlwHpQbxKMRcuKmZkiSFLqjmO4t-3uv5QaFn5jlKT_xVXTlgydQEDbn3b4b74e0Phe4QVVsScgL20yfPBhQ";
+    private List<KeyCustomer> AllKeyCustomers = new List<KeyCustomer>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllKeyCustomers = await transactionService.GetKeyCustomers(token);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}
+
